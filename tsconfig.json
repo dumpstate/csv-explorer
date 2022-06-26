@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "out",
+        "baseUrl": ".",
+        "lib": [
+            "es5",
+            "es6",
+            "ES2018",
+            "dom"
+        ],
+        "jsx": "react-jsx",
+        "declaration": true,
+        "target": "es5",
+        "strict": true,
+        "moduleResolution": "node",
+        "sourceMap": true
+    },
+    "include": [
+        "src"
+    ]
+}

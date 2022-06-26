@@ -1,0 +1,24 @@
+{
+  "name": "querycsv",
+  "version": "0.1.0",
+  "description": "Run SQL queries against CSV documents.",
+  "main": "index.js",
+  "scripts": {
+    "build:ts": "tsc",
+    "build:bundle": "browserify out/index.js -o dist/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "asadowski@mailbox.org",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.14",
+    "@types/react-dom": "^18.0.5",
+    "browserify": "^17.0.0",
+    "http-serve": "^1.0.1",
+    "typescript": "^4.7.4"
+  }
+}
