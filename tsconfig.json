@@ -14,7 +14,8 @@
         "target": "es5",
         "strict": true,
         "moduleResolution": "node",
-        "sourceMap": true
+        "sourceMap": true,
+        "esModuleInterop": true
     },
     "include": [
         "src"

@@ -2,6 +2,7 @@ import { ProxyType, workerProxy } from '@dumpstate/web-worker-proxy'
 import { useEffect, useState } from 'react'
 import { Database } from 'sql.js'
 import { parse } from 'csv-parse'
+import Split, { Orientation } from './components/Split'
 
 export default function App() {
     const [error, setError] = useState<Error | null>(null)
@@ -45,9 +46,6 @@ export default function App() {
         const reader = new FileReader()
         reader.readAsText(file, 'utf-8')
         reader.onload = async (evt: any) => {
-            // const data = evt.target.result
-            //     .split('\n')
-            //     .map((line: string) => line.split(','))
             parse(evt.target.result, {}, async (err, data) => {
                 console.log('Got data', data)
                 const header = data[0]
@@ -74,18 +72,25 @@ export default function App() {
         }
     }
 
-    if (error) {
-        return <h4>Error: ${error.toString()}</h4>
-    }
+    // if (error) {
+    //     return <h4>Error: ${error.toString()}</h4>
+    // }
 
-    if (!sqlStore) {
-        return <h4>Loading...</h4>
-    }
+    // if (!sqlStore) {
+    //     return <h4>Loading...</h4>
+    // }
+
+    // return (
+    //     <div>
+    //         <h4>sql.js ready!</h4>
+    //         <input type="file" accept=".csv" onChange={onFileChange} />
+    //     </div>
+    // )
 
     return (
-        <div>
-            <h4>sql.js ready!</h4>
-            <input type="file" accept=".csv" onChange={onFileChange} />
-        </div>
+        <Split orientation={Orientation.Horizontal}>
+            <div>Yellow!</div>
+            <div>No a jak?</div>
+        </Split>
     )
 }

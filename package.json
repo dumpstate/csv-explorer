@@ -1,15 +1,15 @@
 {
-  "name": "querycsv",
+  "name": "csv-explorer",
   "version": "0.1.0",
   "description": "Run SQL queries against CSV documents.",
-  "main": "index.js",
+  "main": "dist/app.js",
   "scripts": {
     "build:ts": "tsc",
     "build:css": "postcss --use tailwindcss --use autoprefixer -o dist/app.css src/**/*.css",
     "build:bundle": "browserify out/index.js -o dist/app.js",
     "build:sql-store": "browserify out/sqlStore.js -o dist/sqlStore.js"
   },
-  "author": "asadowski@mailbox.org",
+  "author": "Albert Sadowski <asadowski@mailbox.org>",
   "license": "MIT",
   "dependencies": {
     "@dumpstate/web-worker-proxy": "^0.1.5",
