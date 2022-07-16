@@ -4,7 +4,7 @@ import initSqlJs, { Database } from 'sql.js'
 async function createDatabase(): Promise<Database> {
     try {
         const SQL = await initSqlJs({
-            locateFile: (_: string, __: string) => 'sql-wasm.wasm',
+            locateFile: (_: string, __: string) => '../wasm/sql-wasm.wasm',
         })
 
         return new SQL.Database()

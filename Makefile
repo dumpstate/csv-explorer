@@ -21,13 +21,13 @@ clean:
 
 build: build-static build-js build-css build-workers
 
-build-static: $(DIST)/index.html $(DIST)/sql-wasm.wasm
+build-static: $(DIST)/index.html $(DIST)/wasm/sql-wasm.wasm
 
 build-js: $(DIST)/app.js
 
 build-css: $(DIST)/app.css
 
-build-workers: $(DIST)/sqlStore.js
+build-workers: $(DIST)/workers/database.js
 
 preview: build
 	$(NPX) http-serve $(DIST) -a localhost -p 8080
@@ -35,17 +35,20 @@ preview: build
 $(DIST):
 	$(MKD) $(DIST)
 
+$(DIST)/wasm:
+	$(MKD) $(DIST)/wasm
+
 $(DIST)/index.html: $(DIST)
 	$(CP) public/index.html $(DIST)/index.html
 
-$(DIST)/sql-wasm.wasm:
-	$(CP) node_modules/sql.js/dist/sql-wasm.wasm $(DIST)/sql-wasm.wasm
+$(DIST)/wasm/sql-wasm.wasm: $(DIST)/wasm
+	$(CP) node_modules/sql.js/dist/sql-wasm.wasm $(DIST)/wasm/sql-wasm.wasm
 
 $(DIST)/app.js: $(DIST) $(JS_SRC)
 	$(NPM) run build:bundle
 
-$(DIST)/sqlStore.js: $(DIST) $(JS_SRC)
-	$(NPM) run build:sql-store
+$(DIST)/workers/database.js: $(DIST) $(JS_SRC)
+	$(NPM) run build:workers
 
 $(JS_SRC): $(TS_ALL)
 	$(NPM) run build:ts

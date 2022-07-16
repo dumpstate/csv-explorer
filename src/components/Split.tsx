@@ -6,15 +6,14 @@ export enum Orientation {
 }
 
 interface SplitProps {
-    readonly orientation: Orientation
     readonly children: ReactNode[]
+    readonly orientation?: Orientation
+    readonly minSizePx?: number
+    readonly gutterSizePx?: number
+    readonly initialSplit?: [string, string]
 }
 
-export default function Split(props: SplitProps) {
-    if (props.children.length != 2) {
-        throw new Error('Exactly two children required for Split')
-    }
-
+function HorizontalSplit(props: SplitProps) {
     const gutter = useRef<HTMLDivElement>(null)
     const leftPane = useRef<HTMLDivElement>(null)
     const rightPane = useRef<HTMLDivElement>(null)
@@ -47,21 +46,111 @@ export default function Split(props: SplitProps) {
     }
 
     return (
-        <div className='w-full h-full flex'>
+        <div className='w-full h-full flex flex-row'>
             <div
                 ref={leftPane}
-                className='w-1/5 h-full min-w-[100px] bg-neutral-100'>
+                className='h-full'
+                style={{
+                    width: props.initialSplit?.[0],
+                    minWidth: `${props.minSizePx}px`,
+                }}>
                 {props.children[0]}
             </div>
             <div
                 ref={gutter}
-                className='w-1 h-full cursor-col-resize bg-neutral-200 select-none'
+                className='h-full cursor-col-resize select-none bg-neutral-200'
+                style={{width: `${props.gutterSizePx}px`}}
                 onMouseDown={gutterOnMouseDown}></div>
             <div 
                 ref={rightPane}
-                className='w-4/5 h-full min-w-[100px] bg-neutral-50'>
+                className='h-full'
+                style={{
+                    width: props.initialSplit?.[1],
+                    minWidth: `${props.minSizePx}px`,
+                }}>
                 {props.children[1]}
             </div>
         </div>
+    )
+}
+
+function VerticalSplit(props: SplitProps) {
+    const gutter = useRef<HTMLDivElement>(null)
+    const topPane = useRef<HTMLDivElement>(null)
+    const bottomPane = useRef<HTMLDivElement>(null)
+
+    function gutterOnMouseDown(mouseDownEvt: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) {
+        const offsetTop = gutter.current?.offsetTop || 0
+        const topHeight = topPane.current?.offsetHeight || 0
+        const bottomHeight = bottomPane.current?.offsetHeight || 0
+
+        document.onmousemove = (evt: globalThis.MouseEvent) => {
+            const dy = Math.min(
+                Math.max(evt.clientY - mouseDownEvt.clientY, -topHeight),
+                bottomHeight,
+            )
+
+            if (gutter.current) {
+                gutter.current.style.top = `${offsetTop + dy}px`
+            }
+            if (topPane.current) {
+                topPane.current.style.height = `${topHeight + dy}px`
+            }
+            if (bottomPane.current) {
+                bottomPane.current.style.height = `${bottomHeight - dy}px`
+            }
+        }
+
+        document.onmouseup = () => {
+            document.onmousemove = document.onmouseup = null
+        }
+    }
+
+    return (
+        <div className='w-full h-full flex flex-col'>
+            <div
+                ref={topPane}
+                className='w-full'
+                style={{
+                    height: props.initialSplit?.[0],
+                    minHeight: `${props.minSizePx}px`,
+                }}>
+                {props.children[0]}
+            </div>
+            <div
+                ref={gutter}
+                className='w-full cursor-col-resize select-none bg-neutral-200'
+                style={{height: `${props.gutterSizePx}px`}}
+                onMouseDown={gutterOnMouseDown}></div>
+            <div
+                ref={bottomPane}
+                className='w-full'
+                style={{
+                    height: props.initialSplit?.[1],
+                    minHeight: `${props.minSizePx}px`,
+                }}>
+                {props.children[1]}
+            </div>
+        </div>
+    )
+}
+
+export default function Split(props: SplitProps) {
+    if (props.children.length !== 2) {
+        throw new Error('Exactly two childred required for Split')
+    }
+
+    const propsWithDefaults = {
+        ...props,
+        orientation: props.orientation || Orientation.Horizontal,
+        minSizePx: props.minSizePx || 100,
+        gutterSizePx: props.gutterSizePx || 4,
+        initialSplit: props.initialSplit || ['20%', '80%']
+    }
+
+    return (
+        propsWithDefaults.orientation === Orientation.Horizontal
+            ? <HorizontalSplit {...propsWithDefaults} />
+            : <VerticalSplit {...propsWithDefaults} />
     )
 }

@@ -7,7 +7,7 @@
     "build:ts": "tsc",
     "build:css": "postcss --use tailwindcss --use autoprefixer -o dist/app.css src/**/*.css",
     "build:bundle": "browserify out/index.js -o dist/app.js",
-    "build:sql-store": "browserify out/sqlStore.js -o dist/sqlStore.js"
+    "build:workers": "browserify out/workers/database.js -o dist/workers/database.js"
   },
   "author": "Albert Sadowski <asadowski@mailbox.org>",
   "license": "MIT",

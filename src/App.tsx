@@ -1,76 +1,78 @@
-import { ProxyType, workerProxy } from '@dumpstate/web-worker-proxy'
-import { useEffect, useState } from 'react'
-import { Database } from 'sql.js'
-import { parse } from 'csv-parse'
 import Split, { Orientation } from './components/Split'
+import SqlStore from './stores/SqlStore'
+import NavigationPane from './components/NavigationPane'
 
-export default function App() {
-    const [error, setError] = useState<Error | null>(null)
-    const [file, setFile] = useState<any>(null)
-    const [sqlStore, setSqlStore] = useState<ProxyType<Database> | null>(null)
+interface AppProps {
+    readonly sqlStore: SqlStore
+}
 
-    useEffect(() => {
-        const init = async () => {
-            const proxy = await workerProxy<Database>('./sqlStore.js')
+export default function App(props: AppProps) {
+    // const [error, setError] = useState<Error | null>(null)
+    // const [file, setFile] = useState<any>(null)
+    // const [sqlStore, setSqlStore] = useState<ProxyType<Database> | null>(null)
 
-            setSqlStore(proxy)
-        }
+    // useEffect(() => {
+    //     const init = async () => {
+    //         const proxy = await workerProxy<Database>('./sqlStore.js')
 
-        init()
-    }, [])
+    //         setSqlStore(proxy)
+    //     }
 
-    function normalize(name: string): string {
-        return name
-            .split(/\s+/)
-            .map(part => part
-                .replace(/\W/g, '')
-                .toLowerCase())
-            .join('_')
-    }
+    //     init()
+    // }, [])
 
-    function normalizeEntry(entry: string): string {
-        return entry
-            .replace(/"/g, '')
-            .trim()
-    }
+    // function normalize(name: string): string {
+    //     return name
+    //         .split(/\s+/)
+    //         .map(part => part
+    //             .replace(/\W/g, '')
+    //             .toLowerCase())
+    //         .join('_')
+    // }
 
-    const onFileChange = (evt: any) => {
-        if (!sqlStore) {
-            throw Error('sql.js not ready')
-        }
+    // function normalizeEntry(entry: string): string {
+    //     return entry
+    //         .replace(/"/g, '')
+    //         .trim()
+    // }
 
-        const file = evt.target.files[0]
+    // const onFileChange = (evt: any) => {
+    //     if (!sqlStore) {
+    //         throw Error('sql.js not ready')
+    //     }
 
-        setFile(file)
+    //     const file = evt.target.files[0]
 
-        const reader = new FileReader()
-        reader.readAsText(file, 'utf-8')
-        reader.onload = async (evt: any) => {
-            parse(evt.target.result, {}, async (err, data) => {
-                console.log('Got data', data)
-                const header = data[0]
-                    .map(normalize)
+    //     setFile(file)
 
-                await sqlStore.run(`CREATE TABLE foo (${header.join(', ')})`)
-                data.slice(1).forEach(async (row: string[]) => {
-                    const values = row
-                        .map(normalizeEntry)
-                        .map(entry => `"${entry}"`).join(', ')
-                    const stmt = `INSERT INTO foo VALUES (${values})`
-                    try {
-                        await sqlStore.run(stmt)
-                    } catch(_) {}
-                })
+    //     const reader = new FileReader()
+    //     reader.readAsText(file, 'utf-8')
+    //     reader.onload = async (evt: any) => {
+    //         parse(evt.target.result, {}, async (err, data) => {
+    //             console.log('Got data', data)
+    //             const header = data[0]
+    //                 .map(normalize)
 
-                const content = await sqlStore.exec('SELECT * FROM foo')
+    //             await sqlStore.run(`CREATE TABLE foo (${header.join(', ')})`)
+    //             data.slice(1).forEach(async (row: string[]) => {
+    //                 const values = row
+    //                     .map(normalizeEntry)
+    //                     .map(entry => `"${entry}"`).join(', ')
+    //                 const stmt = `INSERT INTO foo VALUES (${values})`
+    //                 try {
+    //                     await sqlStore.run(stmt)
+    //                 } catch(_) {}
+    //             })
 
-                console.log(content)
-            })
-        }
-        reader.onerror = (_: any) => {
-            setError(new Error('error reading file'))
-        }
-    }
+    //             const content = await sqlStore.exec('SELECT * FROM foo')
+
+    //             console.log(content)
+    //         })
+    //     }
+    //     reader.onerror = (_: any) => {
+    //         setError(new Error('error reading file'))
+    //     }
+    // }
 
     // if (error) {
     //     return <h4>Error: ${error.toString()}</h4>
@@ -88,9 +90,12 @@ export default function App() {
     // )
 
     return (
-        <Split orientation={Orientation.Horizontal}>
-            <div>Yellow!</div>
-            <div>No a jak?</div>
+        <Split>
+            <NavigationPane sqlStore={props.sqlStore} />
+            <Split orientation={Orientation.Vertical}>
+                <div>SQL Editor Pane</div>
+                <div>Result Pane</div>
+            </Split>
         </Split>
     )
 }
