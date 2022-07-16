@@ -1,5 +1,5 @@
 import { ProxyType, workerProxy } from '@dumpstate/web-worker-proxy'
-import { Database } from 'sql.js'
+import { Database, QueryExecResult } from 'sql.js'
 
 export default class SqlStore {
 
@@ -14,13 +14,20 @@ export default class SqlStore {
 
         await db.exec('create table if not exists foo(id integer primary key)')
 
-        const tables = await db.exec(`
+        const res = await db.exec(`
             select name
             from sqlite_schema
             where type = 'table' and
                   name not like 'sqlite_%'
         `)
 
-        return tables.map(({ values }) => values[0].toString())
+        return res.flatMap(({ values }) =>
+            values.map(value => value.toString()))
+    }
+
+    public async exec(stmt: string): Promise<QueryExecResult[]> {
+        const db = await this.proxy
+
+        return db.exec(stmt)
     }
 }

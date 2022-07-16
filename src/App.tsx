@@ -1,9 +1,30 @@
 import Split, { Orientation } from './components/Split'
 import SqlStore from './stores/SqlStore'
-import NavigationPane from './components/NavigationPane'
+import EntityList from './components/EntityList'
+import CodeEditor from './components/CodeEditor'
+import { useEffect, useState } from 'react'
 
 interface AppProps {
     readonly sqlStore: SqlStore
+}
+
+interface ActionBarProps {
+    readonly onRun?: () => void
+    readonly onImportCSV?: () => void
+}
+
+function ActionBar(props: ActionBarProps) {
+    const {
+        onRun,
+        onImportCSV,
+    } = props
+
+    return (
+        <div className='flex flex-row'>
+            {onRun && <button onClick={onRun}>Run</button>}
+            {onImportCSV && <button onClick={onImportCSV}></button>}
+        </div>
+    )
 }
 
 export default function App(props: AppProps) {
@@ -89,12 +110,44 @@ export default function App(props: AppProps) {
     //     </div>
     // )
 
+    const { sqlStore } = props
+    const [query, setQuery] = useState<string>('')
+    const [result, setResult] = useState<string>('')
+    const [tables, setTables] = useState<string[]>([])
+
+    useEffect(() => {loadTables()}, [])
+
+    async function loadTables() {
+        setTables(await sqlStore.getAllTables())
+    }
+
+    async function runQuery() {
+        try {
+            const res = await sqlStore.exec(query)
+            await loadTables()
+            setResult(JSON.stringify(res, undefined, 2))
+        } catch(err: any) {
+            console.error(err)
+            setResult(err.toString())
+        }
+    }
+
+    function importCSV() {
+        console.log('Import CSV :: not implemented')
+    }
+
     return (
         <Split>
-            <NavigationPane sqlStore={props.sqlStore} />
+            <div className='flex flex-col'>
+                <ActionBar onImportCSV={importCSV} />
+                <EntityList tables={tables} />
+            </div>
             <Split orientation={Orientation.Vertical}>
-                <div>SQL Editor Pane</div>
-                <div>Result Pane</div>
+                <div className='flux flux-col'>
+                    <ActionBar onRun={runQuery} />
+                    <CodeEditor onChange={setQuery} />
+                </div>
+                <pre>{result}</pre>
             </Split>
         </Split>
     )
