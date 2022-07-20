@@ -1,7 +1,8 @@
+import CodeEditor from '@uiw/react-textarea-code-editor'
+
 import Split, { Orientation } from './components/Split'
 import SqlStore from './stores/SqlStore'
 import EntityList from './components/EntityList'
-import CodeEditor from './components/CodeEditor'
 import { useEffect, useState } from 'react'
 
 interface AppProps {
@@ -143,11 +144,24 @@ export default function App(props: AppProps) {
                 <EntityList tables={tables} />
             </div>
             <Split orientation={Orientation.Vertical}>
-                <div className='flux flux-col'>
-                    <ActionBar onRun={runQuery} />
-                    <CodeEditor onChange={setQuery} />
+                <div className='w-full h-full flex flex-col'>
+                    <CodeEditor
+                        value={query}
+                        language='sql'
+                        placeholder='Your SQL query'
+                        onChange={(evn) => setQuery(evn.target.value)}
+                        padding={15}
+                        style={{
+                            height: '100%',
+                            fontSize: 12,
+                            backgroundColor: "#f5f5f5",
+                            fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+                        }} />
+                    <button
+                        className='justify-self-end'
+                        onClick={runQuery}>Run</button>
                 </div>
-                <pre>{result}</pre>
+                <pre className='w-full h-full'>{result}</pre>
             </Split>
         </Split>
     )
