@@ -18,6 +18,9 @@
         "sourceMap": true,
         "esModuleInterop": true
     },
+    "files": [
+        "./externals.d.ts"
+    ],
     "include": [
         "src"
     ]

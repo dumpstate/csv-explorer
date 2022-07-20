@@ -1,9 +1,10 @@
 import CodeEditor from '@uiw/react-textarea-code-editor'
+import { Grid } from 'react-spreadsheet-grid'
+import { useEffect, useState } from 'react'
 
 import Split, { Orientation } from './components/Split'
 import SqlStore from './stores/SqlStore'
 import EntityList from './components/EntityList'
-import { useEffect, useState } from 'react'
 
 interface AppProps {
     readonly sqlStore: SqlStore
@@ -113,7 +114,7 @@ export default function App(props: AppProps) {
 
     const { sqlStore } = props
     const [query, setQuery] = useState<string>('')
-    const [result, setResult] = useState<string>('')
+    const [result, setResult] = useState<any[]>([])
     const [tables, setTables] = useState<string[]>([])
 
     useEffect(() => {loadTables()}, [])
@@ -126,10 +127,10 @@ export default function App(props: AppProps) {
         try {
             const res = await sqlStore.exec(query)
             await loadTables()
-            setResult(JSON.stringify(res, undefined, 2))
+            setResult(res)
         } catch(err: any) {
             console.error(err)
-            setResult(err.toString())
+            setResult([])
         }
     }
 
@@ -161,7 +162,22 @@ export default function App(props: AppProps) {
                         className='justify-self-end'
                         onClick={runQuery}>Run</button>
                 </div>
-                <pre className='w-full h-full'>{result}</pre>
+                <Grid
+                    columns={result && result.length
+                        ? result[0].columns
+                            .map((colName: string, ix: number) => ({
+                                title: () => colName,
+                                value: (row: any) => <pre>{row.values[ix]}</pre>
+                            }))
+                        : []}
+                    rows={result && result.length
+                        ? result[0].values
+                            .map((row: any[], ix: number) => ({
+                                __ix: ix,
+                                values: row,
+                            }))
+                        : []}
+                    getRowKey={(row: any) => row.__ix} />
             </Split>
         </Split>
     )
