@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import Split, { Orientation } from './components/Split'
 import SqlStore from './stores/SqlStore'
 import EntityList from './components/EntityList'
+import Modal from './components/Modal'
 
 interface AppProps {
     readonly sqlStore: SqlStore
@@ -24,7 +25,7 @@ function ActionBar(props: ActionBarProps) {
     return (
         <div className='flex flex-row'>
             {onRun && <button onClick={onRun}>Run</button>}
-            {onImportCSV && <button onClick={onImportCSV}></button>}
+            {onImportCSV && <button onClick={onImportCSV}>Import CSV</button>}
         </div>
     )
 }
@@ -116,6 +117,7 @@ export default function App(props: AppProps) {
     const [query, setQuery] = useState<string>('')
     const [result, setResult] = useState<any[]>([])
     const [tables, setTables] = useState<string[]>([])
+    const [showImportModal, setShowImportModal] = useState<boolean>(false)
 
     useEffect(() => {loadTables()}, [])
 
@@ -134,15 +136,16 @@ export default function App(props: AppProps) {
         }
     }
 
-    function importCSV() {
-        console.log('Import CSV :: not implemented')
-    }
-
     return (
         <Split>
             <div className='flex flex-col'>
-                <ActionBar onImportCSV={importCSV} />
+                <ActionBar onImportCSV={() => setShowImportModal(true)} />
                 <EntityList tables={tables} />
+                <Modal
+                    show={showImportModal}
+                    close={() => setShowImportModal(false)}>
+                    Import CSV...
+                </Modal>
             </div>
             <Split orientation={Orientation.Vertical}>
                 <div className='w-full h-full flex flex-col'>
