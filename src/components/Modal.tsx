@@ -2,15 +2,10 @@ import { ReactNode } from 'react'
 
 interface ModalProps {
     readonly children: ReactNode
-    readonly show: boolean
     readonly close: () => void
 }
 
 export default function Modal(props: ModalProps) {
-    if (!props.show) {
-        return null
-    }
-
     return (
         <div
             className='w-full h-full fixed z-10 left-0 top-0 overflow-auto bg-gray-400/60'>
@@ -20,7 +15,7 @@ export default function Modal(props: ModalProps) {
                 <span
                     className='float-right font-bold text-2xl cursor-pointer'
                     onClick={props.close}>&times;</span>
-                <p>{props.children}</p>
+                {props.children}
             </div>
         </div>
     )
