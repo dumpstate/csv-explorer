@@ -25,6 +25,14 @@ export default class SqlStore {
             values.map(value => value.toString()))
     }
 
+    public async getColumns(table: string): Promise<string[]> {
+        const db = await this.proxy
+        const res = await db.exec(`pragma table_info(${table})`)
+
+        return res.flatMap(({ values }) =>
+            values.map(entry => `${entry[1]} (${entry[2]})`))
+    }
+
     public async exec(stmt: string): Promise<QueryExecResult[]> {
         const db = await this.proxy
 

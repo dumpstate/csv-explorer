@@ -7,6 +7,7 @@ import SqlStore from './stores/SqlStore'
 import EntityList from './components/EntityList'
 import Modal from './components/Modal'
 import ImportForm from './components/ImportForm'
+import { Table } from './models/Table'
 
 interface AppProps {
     readonly sqlStore: SqlStore
@@ -36,13 +37,21 @@ export default function App(props: AppProps) {
 
     const [query, setQuery] = useState<string>('')
     const [result, setResult] = useState<any[]>([])
-    const [tables, setTables] = useState<string[]>([])
+    const [tables, setTables] = useState<Table[]>([])
     const [showImportModal, setShowImportModal] = useState<boolean>(false)
 
     useEffect(() => {loadTables()}, [])
 
     async function loadTables() {
-        setTables(await sqlStore.getAllTables())
+        const tableNames = await sqlStore.getAllTables()
+        const tables = await Promise.all(
+            tableNames.map(async (table) => ({
+                name: table,
+                columns: await sqlStore.getColumns(table)
+            })),
+        )
+
+        setTables(tables)
     }
 
     async function runQuery() {

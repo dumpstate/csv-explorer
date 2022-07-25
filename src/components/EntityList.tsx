@@ -1,12 +1,23 @@
+import { Table } from 'src/models/Table'
+
 interface EntityListProps {
-    readonly tables: string[]
+    readonly tables: Table[]
 }
 
 export default function EntityList(props: EntityListProps) {
+    const { tables } = props
+
     return (
-        <ul>
-            {props.tables.map((table, ix) =>
-                <li key={ix}>{table}</li>
+        <ul className='p-2'>
+            {tables.map((table, ix) =>
+                <details key={ix}>
+                    <summary>{table.name}</summary>
+                    <ul>
+                        {table.columns.map((col: string, ic: number) =>
+                            <div key={ic}>{col}</div>
+                        )}
+                    </ul>
+                </details>
             )}
         </ul>
     )
