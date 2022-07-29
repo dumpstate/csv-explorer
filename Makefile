@@ -25,7 +25,7 @@ build-static: $(DIST)/index.html $(DIST)/wasm/sql-wasm.wasm
 
 build-js: $(DIST)/app.js
 
-build-css: $(DIST)/app.css
+build-css: $(DIST)/stylesheet.css
 
 build-workers: $(DIST)/workers/database.js
 
@@ -53,5 +53,5 @@ $(DIST)/workers/database.js: $(DIST) $(JS_SRC)
 $(JS_SRC): $(TS_ALL)
 	$(NPM) run build:ts
 
-$(DIST)/app.css: $(DIST) $(SRC)/main.css
+$(DIST)/stylesheet.css: $(DIST) $(SRC)/main.css
 	$(NPM) run build:css

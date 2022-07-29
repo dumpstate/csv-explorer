@@ -1,13 +1,13 @@
 import CodeEditor from '@uiw/react-textarea-code-editor'
-import { Grid } from 'react-spreadsheet-grid'
 import { useEffect, useState } from 'react'
 
 import Split, { Orientation } from './components/Split'
-import SqlStore from './stores/SqlStore'
 import EntityList from './components/EntityList'
 import Modal from './components/Modal'
 import ImportForm from './components/ImportForm'
+import Spreadsheet from './components/Spreadsheet'
 import { Table } from './models/Table'
+import SqlStore from './stores/SqlStore'
 
 interface AppProps {
     readonly sqlStore: SqlStore
@@ -98,22 +98,7 @@ export default function App(props: AppProps) {
                         className='justify-self-end'
                         onClick={runQuery}>Run</button>
                 </div>
-                <Grid
-                    columns={result && result.length
-                        ? result[0].columns
-                            .map((colName: string, ix: number) => ({
-                                title: () => colName,
-                                value: (row: any) => <pre>{row.values[ix]}</pre>
-                            }))
-                        : []}
-                    rows={result && result.length
-                        ? result[0].values
-                            .map((row: any[], ix: number) => ({
-                                __ix: ix,
-                                values: row,
-                            }))
-                        : []}
-                    getRowKey={(row: any) => row.__ix} />
+                <Spreadsheet />
             </Split>
         </Split>
     )
