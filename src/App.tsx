@@ -98,7 +98,7 @@ export default function App(props: AppProps) {
                         className='justify-self-end'
                         onClick={runQuery}>Run</button>
                 </div>
-                <Spreadsheet />
+                <Spreadsheet data={result} />
             </Split>
         </Split>
     )
