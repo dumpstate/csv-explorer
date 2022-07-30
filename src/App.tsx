@@ -69,7 +69,9 @@ export default function App(props: AppProps) {
         <Split>
             <div className='flex flex-col'>
                 <ActionBar onImportCSV={() => setShowImportModal(true)} />
-                <EntityList tables={tables} />
+                <EntityList
+                    tables={tables}
+                    sqlStore={sqlStore} />
                 {showImportModal && <Modal
                     close={() => setShowImportModal(false)}>
                     <ImportForm

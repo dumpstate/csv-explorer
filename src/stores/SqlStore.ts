@@ -1,4 +1,5 @@
 import { ProxyType, workerProxy } from '@dumpstate/web-worker-proxy'
+import { string } from 'prop-types'
 import { Database, QueryExecResult } from 'sql.js'
 
 export default class SqlStore {
@@ -31,6 +32,27 @@ export default class SqlStore {
 
         return res.flatMap(({ values }) =>
             values.map(entry => `${entry[1]} (${entry[2]})`))
+    }
+
+    public async getAllRows(table: string): Promise<[string[], any[]]> {
+        const db = await this.proxy
+        const res = await db.exec(`select * from ${table}`)
+
+        if (!res || res.length === 0) {
+            return [[], []]
+        }
+
+        const columns = res[0].columns
+        const data: any[] = columns
+            .reduce((acc: any, col: string, cix: number) => {
+                res[0].values.forEach((row, rix) => {
+                    acc[rix][col] = row[cix]
+                })
+
+                return acc
+            }, res[0].values.map(() => ({})))
+
+        return [columns, data]
     }
 
     public async exec(stmt: string): Promise<QueryExecResult[]> {
