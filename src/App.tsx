@@ -17,6 +17,7 @@ export default function App(props: AppProps) {
     const { sqlStore } = props
 
     const [query, setQuery] = useState<string>('')
+    const [selection, setSelection] = useState<[number, number]>([0, 0])
     const [result, setResult] = useState<any[]>([])
     const [tables, setTables] = useState<Table[]>([])
     const [showImportModal, setShowImportModal] = useState<boolean>(false)
@@ -36,8 +37,13 @@ export default function App(props: AppProps) {
     }
 
     async function runQuery() {
+        const [start, end] = selection
+        const subQuery = start === end
+            ? query
+            : query.slice(start, end)
+
         try {
-            const res = await sqlStore.exec(query)
+            const res = await sqlStore.exec(subQuery)
             await loadTables()
             setResult(res)
         } catch(err: any) {
@@ -77,6 +83,10 @@ export default function App(props: AppProps) {
                         language='sql'
                         placeholder='Your SQL query'
                         onChange={(evn) => setQuery(evn.target.value)}
+                        onSelect={(evn) => setSelection([
+                            evn.currentTarget.selectionStart,
+                            evn.currentTarget.selectionEnd,
+                        ])}
                         padding={15}
                         style={{
                             height: '100%',
