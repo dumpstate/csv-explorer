@@ -13,25 +13,6 @@ interface AppProps {
     readonly sqlStore: SqlStore
 }
 
-interface ActionBarProps {
-    readonly onRun?: () => void
-    readonly onImportCSV?: () => void
-}
-
-function ActionBar(props: ActionBarProps) {
-    const {
-        onRun,
-        onImportCSV,
-    } = props
-
-    return (
-        <div className='flex flex-row'>
-            {onRun && <button onClick={onRun}>Run</button>}
-            {onImportCSV && <button onClick={onImportCSV}>Import CSV</button>}
-        </div>
-    )
-}
-
 export default function App(props: AppProps) {
     const { sqlStore } = props
 
@@ -65,10 +46,17 @@ export default function App(props: AppProps) {
         }
     }
 
+    async function save() {
+        await sqlStore.save()
+    }
+
     return (
         <Split>
             <div className='flex flex-col'>
-                <ActionBar onImportCSV={() => setShowImportModal(true)} />
+                <div className='flex flex-row'>
+                    <button onClick={() => setShowImportModal(true)}>Import CSV</button>
+                    <button onClick={() => save()}>Save</button>
+                </div>
                 <EntityList
                     tables={tables}
                     sqlStore={sqlStore} />
