@@ -6,10 +6,11 @@ import SqlStore from 'src/stores/SqlStore'
 interface EntityListProps {
     readonly tables: Table[]
     readonly sqlStore: SqlStore
+    readonly onSchemaChange: () => void
 }
 
 export default function EntityList(props: EntityListProps) {
-    const { tables, sqlStore } = props
+    const { tables, sqlStore, onSchemaChange } = props
 
     async function download(tableName: string) {
         const [columns, data] = await sqlStore.getAllRows(tableName)
@@ -18,15 +19,26 @@ export default function EntityList(props: EntityListProps) {
         downloadFile(`${tableName}.csv`, csv)
     }
 
+    async function drop(tableName: string) {
+        await sqlStore.dropTable(tableName)
+
+        onSchemaChange()
+    }
+
     return (
         <ul className='p-2'>
             {tables.map((table, ix) =>
                 <details key={ix}>
                     <summary className='flex flex-row justify-between'>
                         <div>{table.name}</div>
-                        <button onClick={() => download(table.name)}>
-                            Download
-                        </button>
+                        <div className='flex flex-row'>
+                            <button onClick={() => download(table.name)}>
+                                Download
+                            </button>
+                            <button onClick={() => drop(table.name)}>
+                                Drop
+                            </button>
+                        </div>
                     </summary>
                     <ul>
                         {table.columns.map((col: string, ic: number) =>

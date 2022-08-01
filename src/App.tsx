@@ -65,7 +65,8 @@ export default function App(props: AppProps) {
                 </div>
                 <EntityList
                     tables={tables}
-                    sqlStore={sqlStore} />
+                    sqlStore={sqlStore}
+                    onSchemaChange={loadTables} />
                 {showImportModal && <Modal
                     close={() => setShowImportModal(false)}>
                     <ImportForm

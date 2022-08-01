@@ -23,6 +23,12 @@ export default class SqlStore {
             values.map(value => value.toString()))
     }
 
+    public async dropTable(table: string): Promise<QueryExecResult[]> {
+        const db = await this.proxy
+
+        return db.exec(`drop table if exists ${table}`);
+    }
+
     public async getColumns(table: string): Promise<string[]> {
         const db = await this.proxy
         const res = await db.exec(`pragma table_info(${table})`)
