@@ -1,5 +1,6 @@
 import { run } from '@dumpstate/web-worker-proxy'
 import initSqlJs, { Database } from 'sql.js'
+import { cache } from '../services/cache'
 
 declare module 'sql.js' {
     interface Database {
@@ -7,70 +8,6 @@ declare module 'sql.js' {
     }
 }
 
-function createCache(name: string): Promise<IDBDatabase> {
-    return new Promise((resolve, reject) => {
-        const req = self.indexedDB.open('CSVExplorer', 1)
-
-        req.onerror = (evt) => {
-            reject(new Error(`IndexedDB error: ${(evt?.target as any)?.errorCode}`))
-        }
-
-        req.onsuccess = (evt) => {
-            const db = (evt?.target as any)?.result
-
-            if (!db) {
-                reject(new Error('Failed to create IndexedDB'))
-            } else {
-                resolve(db)
-            }
-        }
-
-        req.onupgradeneeded = (evt) => {
-            const db = (evt?.target as any)?.result
-
-            db.createObjectStore(name)
-        }
-    })
-}
-
-async function cache<T>(name: string) {
-    const db = await createCache(name)
-    const key = `${name}:1`
-
-    return {
-        set(value: T): Promise<void> {
-            const store = db
-                .transaction(name, 'readwrite')
-                .objectStore(name)
-
-            return new Promise<void>((resolve, reject) => {
-                const req = store.put(value, key)
-
-                req.onsuccess = () => resolve()
-                req.onerror = (evt) => {
-                    reject(new Error(`Failed to store: ${(evt?.target as any)?.errorCode}`))
-                }
-            })
-        },
-
-        get(): Promise<T> {
-            const store = db
-                .transaction(name, 'readonly')
-                .objectStore(name)
-
-            return new Promise((resolve, reject) => {
-                const req = store.get(key)
-
-                req.onsuccess = (evt) => {
-                    resolve(req.result)
-                }
-                req.onerror = (evt) => {
-                    reject(new Error(`Failed to get the sqlite: ${(evt?.target as any)?.errorCode}`))
-                }
-            })
-        },
-    }
-}
 
 async function createDatabase(): Promise<Database> {
     try {

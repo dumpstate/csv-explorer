@@ -8,6 +8,7 @@ import ImportForm from './components/ImportForm'
 import Spreadsheet from './components/Spreadsheet'
 import { Table } from './models/Table'
 import SqlStore from './stores/SqlStore'
+import { Cache, cache } from './services/cache'
 
 interface AppProps {
     readonly sqlStore: SqlStore
@@ -21,8 +22,32 @@ export default function App(props: AppProps) {
     const [result, setResult] = useState<any[]>([])
     const [tables, setTables] = useState<Table[]>([])
     const [showImportModal, setShowImportModal] = useState<boolean>(false)
+    const [queryCache, setQueryCache] = useState<Cache<string>>()
 
-    useEffect(() => {loadTables()}, [])
+    useEffect(() => {
+        const init = async () => {
+            await loadTables()
+
+            const queryCache = await cache<string>('query')
+            const cachedQuery = await queryCache.get()
+            cachedQuery && setQuery(cachedQuery)
+            setQueryCache(queryCache)
+        }
+
+        init()
+    }, [])
+
+    async function onEditorChange(query: string | null, selection: [number, number] | null) {
+        if (query != null) {
+            queryCache && await queryCache.set(query)
+
+            setQuery(query)
+        }
+
+        if (selection != null) {
+            setSelection(selection)
+        }
+    }
 
     async function loadTables() {
         const tableNames = await sqlStore.getAllTables()
@@ -83,8 +108,8 @@ export default function App(props: AppProps) {
                         value={query}
                         language='sql'
                         placeholder='Your SQL query'
-                        onChange={(evn) => setQuery(evn.target.value)}
-                        onSelect={(evn) => setSelection([
+                        onChange={(evn) => onEditorChange(evn.target.value, null)}
+                        onSelect={(evn) => onEditorChange(null, [
                             evn.currentTarget.selectionStart,
                             evn.currentTarget.selectionEnd,
                         ])}
