@@ -14,6 +14,23 @@ interface AppProps {
     readonly sqlStore: SqlStore
 }
 
+interface ActionBarButtonProps {
+    readonly label: string
+    readonly action: () => any
+}
+
+function ActionBarButton(props: ActionBarButtonProps) {
+    const { label, action } = props
+
+    return (
+        <button
+            className='my-1 mx-1 py-1 px-2 font-medium text-xs hover:bg-gray-200'
+            onClick={action}>
+            {label}
+        </button>
+    )
+}
+
 export default function App(props: AppProps) {
     const { sqlStore } = props
 
@@ -86,9 +103,13 @@ export default function App(props: AppProps) {
     return (
         <Split>
             <div className='flex flex-col'>
-                <div className='flex flex-row'>
-                    <button onClick={() => setShowImportModal(true)}>Import CSV</button>
-                    <button onClick={() => save()}>Save</button>
+                <div className='flex flex-row bg-gray-100'>
+                    <ActionBarButton
+                        label='Import CSV'
+                        action={() => setShowImportModal(true)} />
+                    <ActionBarButton
+                        label='Save'
+                        action={save} />
                 </div>
                 <EntityList
                     tables={tables}

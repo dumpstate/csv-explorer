@@ -26,7 +26,7 @@ export default function EntityList(props: EntityListProps) {
     }
 
     return (
-        <ul className='p-2'>
+        <ul className='p-2 bg-gray-50'>
             {tables.map((table, ix) =>
                 <details key={ix}>
                     <summary className='flex flex-row justify-between'>

@@ -46,7 +46,7 @@ function HorizontalSplit(props: SplitProps) {
     }
 
     return (
-        <div className='w-full h-full flex flex-row'>
+        <div className='w-full h-full flex flex-row bg-gray-50'>
             <div
                 ref={leftPane}
                 className='h-full overflow-scroll'
@@ -107,7 +107,7 @@ function VerticalSplit(props: SplitProps) {
     }
 
     return (
-        <div className='w-full h-full flex flex-col'>
+        <div className='w-full h-full flex flex-col bg-gray-50'>
             <div
                 ref={topPane}
                 className='w-full overflow-scroll'

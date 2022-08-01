@@ -39,17 +39,17 @@ export default function Spreadsheet(props: SpreadsheetProps) {
 
     if (!data && error) {
         return (
-            <pre>{error}</pre>
+            <pre className='bg-gray-50'>{error}</pre>
         )
     }
 
     if (!data || !data.length) {
         return (
-            <div>No results</div>
+            <div className='bg-gray-50'>No results</div>
         )
     }
 
     return (
-        <div ref={ref} />
+        <div className='bg-gray-50' ref={ref} />
     )
 }
