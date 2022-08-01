@@ -18,8 +18,9 @@ export default function App(props: AppProps) {
     const { sqlStore } = props
 
     const [query, setQuery] = useState<string>('')
+    const [queryError, setQueryError] = useState<string>()
     const [selection, setSelection] = useState<[number, number]>([0, 0])
-    const [result, setResult] = useState<any[]>([])
+    const [result, setResult] = useState<any[] | null>()
     const [tables, setTables] = useState<Table[]>([])
     const [showImportModal, setShowImportModal] = useState<boolean>(false)
     const [queryCache, setQueryCache] = useState<Cache<string>>()
@@ -73,7 +74,8 @@ export default function App(props: AppProps) {
             setResult(res)
         } catch(err: any) {
             console.error(err)
-            setResult([])
+            setQueryError(err.message)
+            setResult(null)
         }
     }
 
@@ -124,7 +126,7 @@ export default function App(props: AppProps) {
                         className='justify-self-end'
                         onClick={runQuery}>Run</button>
                 </div>
-                <Spreadsheet data={result} />
+                <Spreadsheet data={result} error={queryError} />
             </Split>
         </Split>
     )

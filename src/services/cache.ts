@@ -78,6 +78,6 @@ export async function cache<T>(name: string, version = 1): Promise<Cache<T>> {
                     reject(new Error(`Failed to fetch from cache: ${(evt?.target as any)?.errorCode}`))
                 }
             })
-        }
+        },
     }
 }

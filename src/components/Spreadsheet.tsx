@@ -4,12 +4,14 @@ import { useEffect, useRef } from 'react'
 import '../../node_modules/jspreadsheet-ce/dist/jspreadsheet.css'
 
 interface SpreadsheetProps {
-    readonly data?: any[]
+    readonly data: any[] | null | undefined
+    readonly error: string | null | undefined
 }
 
 export default function Spreadsheet(props: SpreadsheetProps) {
     const ref = useRef(null)
-    const { data } = props;
+    const { data, error } = props;
+
     const opts = {
         columns: (data && data.length && data[0].columns
             .map((title: string) => ({
@@ -35,6 +37,12 @@ export default function Spreadsheet(props: SpreadsheetProps) {
             jspreadsheet(ref.current, opts)
         }
     }, [data])
+
+    if (!data && error) {
+        return (
+            <pre>{error}</pre>
+        )
+    }
 
     return (
         count > 0
