@@ -34,7 +34,16 @@ export default class SqlStore {
         const res = await db.exec(`pragma table_info(${table})`)
 
         return res.flatMap(({ values }) =>
-            values.map(entry => `${entry[1]} (${entry[2]})`))
+            values.map(entry => {
+                const tableName = entry[1] as string
+                const dataType = entry[2] as string
+
+                if (dataType && dataType.length) {
+                    return `${tableName} (${dataType})`
+                }
+
+                return tableName
+            }))
     }
 
     public async getAllRows(table: string): Promise<[string[], any[]]> {

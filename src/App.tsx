@@ -1,6 +1,7 @@
 import CodeEditor from '@uiw/react-textarea-code-editor'
 import { useEffect, useState } from 'react'
 
+import ActionButton from './components/ActionButton'
 import Split, { Orientation } from './components/Split'
 import EntityList from './components/EntityList'
 import Modal from './components/Modal'
@@ -12,23 +13,6 @@ import { Cache, cache } from './services/cache'
 
 interface AppProps {
     readonly sqlStore: SqlStore
-}
-
-interface ActionBarButtonProps {
-    readonly label: string
-    readonly action: () => any
-}
-
-function ActionBarButton(props: ActionBarButtonProps) {
-    const { label, action } = props
-
-    return (
-        <button
-            className='my-1 mx-1 py-1 px-2 font-medium text-xs hover:bg-gray-200'
-            onClick={action}>
-            {label}
-        </button>
-    )
 }
 
 export default function App(props: AppProps) {
@@ -103,11 +87,11 @@ export default function App(props: AppProps) {
     return (
         <Split>
             <div className='flex flex-col'>
-                <div className='flex flex-row bg-gray-100'>
-                    <ActionBarButton
+                <div className='flex flex-row bg-neutral-200'>
+                    <ActionButton
                         label='Import CSV'
                         action={() => setShowImportModal(true)} />
-                    <ActionBarButton
+                    <ActionButton
                         label='Save'
                         action={save} />
                 </div>

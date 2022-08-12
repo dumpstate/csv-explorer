@@ -2,6 +2,7 @@ import { Table } from 'src/models/Table'
 import { toCsv } from 'src/services/csv'
 import { downloadFile } from 'src/services/files'
 import SqlStore from 'src/stores/SqlStore'
+import ActionButton from './ActionButton'
 
 interface EntityListProps {
     readonly tables: Table[]
@@ -26,23 +27,23 @@ export default function EntityList(props: EntityListProps) {
     }
 
     return (
-        <ul className='p-2 bg-gray-50'>
+        <ul className='bg-neutral-50'>
             {tables.map((table, ix) =>
-                <details key={ix}>
-                    <summary className='flex flex-row justify-between'>
-                        <div>{table.name}</div>
+                <details key={ix} className='hover:bg-neutral-100'>
+                    <summary className='flex flex-row justify-between p-1'>
+                        <div className='font-light text-sm self-center'>{table.name}</div>
                         <div className='flex flex-row'>
-                            <button onClick={() => download(table.name)}>
-                                Download
-                            </button>
-                            <button onClick={() => drop(table.name)}>
-                                Drop
-                            </button>
+                            <ActionButton
+                                label='Download'
+                                action={() => download(table.name)} />
+                            <ActionButton
+                                label='Drop'
+                                action={() => drop(table.name)} />
                         </div>
                     </summary>
                     <ul>
                         {table.columns.map((col: string, ic: number) =>
-                            <div key={ic}>{col}</div>
+                            <div key={ic} className='font-light text-xs p-1'>{col}</div>
                         )}
                     </ul>
                 </details>
