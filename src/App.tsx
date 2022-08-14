@@ -1,6 +1,6 @@
 import { KVStore } from '@dumpstate/ixdb-kv-store'
 import CodeEditor from '@uiw/react-textarea-code-editor'
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 import ActionButton from './components/ActionButton'
 import Split, { Orientation } from './components/Split'
@@ -14,6 +14,18 @@ import { LOCAL_STORE_NAME, LOCAL_STORE_QUERY_KEY } from './constants'
 
 interface AppProps {
     readonly sqlStore: SqlStore
+}
+
+interface ActionBarProps {
+    children: ReactNode | ReactNode[]
+}
+
+function ActionBar(props: ActionBarProps) {
+    return (
+        <div className='flex flex-row bg-neutral-200'>
+            {props.children}
+        </div>
+    )
 }
 
 export default function App(props: AppProps) {
@@ -88,14 +100,14 @@ export default function App(props: AppProps) {
     return (
         <Split>
             <div className='flex flex-col'>
-                <div className='flex flex-row bg-neutral-200'>
+                <ActionBar>
                     <ActionButton
                         label='Import CSV'
                         action={() => setShowImportModal(true)} />
                     <ActionButton
                         label='Save'
                         action={save} />
-                </div>
+                </ActionBar>
                 <EntityList
                     tables={tables}
                     sqlStore={sqlStore}
@@ -112,25 +124,28 @@ export default function App(props: AppProps) {
             </div>
             <Split orientation={Orientation.Vertical}>
                 <div className='w-full h-full flex flex-col'>
-                    <CodeEditor
-                        value={query}
-                        language='sql'
-                        placeholder='Your SQL query'
-                        onChange={(evn) => onEditorChange(evn.target.value, null)}
-                        onSelect={(evn) => onEditorChange(null, [
-                            evn.currentTarget.selectionStart,
-                            evn.currentTarget.selectionEnd,
-                        ])}
-                        padding={15}
-                        style={{
-                            height: '100%',
-                            fontSize: 12,
-                            backgroundColor: "#f5f5f5",
-                            fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
-                        }} />
-                    <button
-                        className='justify-self-end'
-                        onClick={runQuery}>Run</button>
+                    <ActionBar>
+                        <ActionButton
+                            label='Run'
+                            action={runQuery} />
+                    </ActionBar>
+                    <div className='grow overflow-auto'>
+                        <CodeEditor
+                            value={query}
+                            language='sql'
+                            placeholder='Your SQL query'
+                            onChange={(evn) => onEditorChange(evn.target.value, null)}
+                            onSelect={(evn) => onEditorChange(null, [
+                                evn.currentTarget.selectionStart,
+                                evn.currentTarget.selectionEnd,
+                            ])}
+                            padding={15}
+                            style={{
+                                fontSize: 12,
+                                backgroundColor: "#f5f5f5",
+                                fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+                            }} />
+                    </div>
                 </div>
                 <Spreadsheet data={result} error={queryError} />
             </Split>

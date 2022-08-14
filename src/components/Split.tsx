@@ -49,7 +49,7 @@ function HorizontalSplit(props: SplitProps) {
         <div className='w-full h-full flex flex-row bg-neutral-50'>
             <div
                 ref={leftPane}
-                className='h-full overflow-scroll'
+                className='h-full overflow-auto'
                 style={{
                     width: props.initialSplit?.[0],
                     minWidth: `${props.minSizePx}px`,
@@ -63,7 +63,7 @@ function HorizontalSplit(props: SplitProps) {
                 onMouseDown={gutterOnMouseDown}></div>
             <div 
                 ref={rightPane}
-                className='h-full overflow-scroll'
+                className='h-full overflow-auto'
                 style={{
                     width: props.initialSplit?.[1],
                     minWidth: `${props.minSizePx}px`,
@@ -110,7 +110,7 @@ function VerticalSplit(props: SplitProps) {
         <div className='w-full h-full flex flex-col bg-neutral-50'>
             <div
                 ref={topPane}
-                className='w-full overflow-scroll'
+                className='w-full overflow-auto'
                 style={{
                     height: props.initialSplit?.[0],
                     minHeight: `${props.minSizePx}px`,
@@ -124,7 +124,7 @@ function VerticalSplit(props: SplitProps) {
                 onMouseDown={gutterOnMouseDown}></div>
             <div
                 ref={bottomPane}
-                className='w-full overflow-scroll'
+                className='w-full overflow-auto'
                 style={{
                     height: props.initialSplit?.[1],
                     minHeight: `${props.minSizePx}px`,
