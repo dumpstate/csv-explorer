@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { parseCsv } from 'src/services/csv'
 import SqlStore from 'src/stores/SqlStore'
+import ActionButton from './ActionButton'
 
 interface ImportFormProps {
     readonly sqlStore: SqlStore
+    readonly onClose: () => void
     readonly onDone: () => void
 }
 
@@ -25,6 +27,7 @@ function normalizeEntry(entry: string): string {
 export default function ImportForm(props: ImportFormProps) {
     const {
         sqlStore,
+        onClose,
         onDone,
     } = props
 
@@ -63,17 +66,27 @@ export default function ImportForm(props: ImportFormProps) {
     }
 
     return (
-        <div className='flex flex-col'>
-            <input
-                type='text'
-                onChange={(evt) => setName(evt.target.value)}/>
+        <div className='flex flex-col font-light text-sm p-2 space-y-4'>
+            <div className='flex flex-row w-full space-x-4'>
+                <span className='self-center'>Table name</span>
+                <input
+                    className='grow p-1'
+                    type='text'
+                    onChange={(evt) => setName(evt.target.value)}/>
+            </div>
             <input
                 type='file'
                 accept='.csv'
                 onChange={(evt) => setFile(evt.target.files?.[0])} />
-            <button
-                disabled={!name || !file}
-                onClick={onImport}>Import</button>
+            <div className='flex flex-row justify-center'>
+                <ActionButton
+                    disabled={!name || !file}
+                    label='Import'
+                    action={onImport} />
+                <ActionButton
+                    label='Cancel'
+                    action={onClose} />
+            </div>
         </div>
     )
 }

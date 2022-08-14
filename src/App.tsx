@@ -112,10 +112,10 @@ export default function App(props: AppProps) {
                     tables={tables}
                     sqlStore={sqlStore}
                     onSchemaChange={loadTables} />
-                {showImportModal && <Modal
-                    close={() => setShowImportModal(false)}>
+                {showImportModal && <Modal>
                     <ImportForm
                         sqlStore={sqlStore}
+                        onClose={() => setShowImportModal(false)}
                         onDone={async () => {
                             await loadTables()
                             setShowImportModal(false)
