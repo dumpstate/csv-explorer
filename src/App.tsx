@@ -1,3 +1,4 @@
+import { KVStore } from '@dumpstate/ixdb-kv-store'
 import CodeEditor from '@uiw/react-textarea-code-editor'
 import { useEffect, useState } from 'react'
 
@@ -9,7 +10,7 @@ import ImportForm from './components/ImportForm'
 import Spreadsheet from './components/Spreadsheet'
 import { Table } from './models/Table'
 import SqlStore from './stores/SqlStore'
-import { Cache, cache } from './services/cache'
+import { LOCAL_STORE_NAME, LOCAL_STORE_QUERY_KEY } from './constants'
 
 interface AppProps {
     readonly sqlStore: SqlStore
@@ -24,16 +25,16 @@ export default function App(props: AppProps) {
     const [result, setResult] = useState<any[] | null>()
     const [tables, setTables] = useState<Table[]>([])
     const [showImportModal, setShowImportModal] = useState<boolean>(false)
-    const [queryCache, setQueryCache] = useState<Cache<string>>()
+    const [localStore, setLocalStore] = useState<KVStore>()
 
     useEffect(() => {
         const init = async () => {
             await loadTables()
 
-            const queryCache = await cache<string>('query')
-            const cachedQuery = await queryCache.get()
+            const localStore = await KVStore.create(LOCAL_STORE_NAME)
+            const cachedQuery = await localStore.get<string>(LOCAL_STORE_QUERY_KEY)
             cachedQuery && setQuery(cachedQuery)
-            setQueryCache(queryCache)
+            setLocalStore(localStore)
         }
 
         init()
@@ -41,7 +42,7 @@ export default function App(props: AppProps) {
 
     async function onEditorChange(query: string | null, selection: [number, number] | null) {
         if (query != null) {
-            queryCache && await queryCache.set(query)
+            localStore && await localStore.set(LOCAL_STORE_QUERY_KEY, query)
 
             setQuery(query)
         }

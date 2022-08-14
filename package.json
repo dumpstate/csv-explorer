@@ -12,6 +12,7 @@
   "author": "Albert Sadowski <asadowski@mailbox.org>",
   "license": "MIT",
   "dependencies": {
+    "@dumpstate/ixdb-kv-store": "^0.1.0",
     "@dumpstate/web-worker-proxy": "^0.1.7",
     "@uiw/react-textarea-code-editor": "^2.0.3",
     "csv-parse": "^5.3.0",
