@@ -2,6 +2,8 @@
 
 Run SQL queries against CSV documents.
 
+Build on top of [sql.js](https://sql.js.org/#/) for 100% in-browser experience.
+
 ## Running Locally
 
 1. Install dependencies:
@@ -14,4 +16,10 @@ npm install
 
 ```
 make preview
+```
+
+3. Run tests (Cypress tests require 'preview' to be running):
+
+```
+npm test
 ```

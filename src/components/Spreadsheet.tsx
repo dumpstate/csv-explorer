@@ -50,6 +50,6 @@ export default function Spreadsheet(props: SpreadsheetProps) {
     }
 
     return (
-        <div className='bg-neutral-50' ref={ref} />
+        <div id='spreadsheet' className='bg-neutral-50' ref={ref} />
     )
 }

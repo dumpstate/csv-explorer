@@ -66,7 +66,9 @@ export default function ImportForm(props: ImportFormProps) {
     }
 
     return (
-        <div className='flex flex-col font-light text-sm p-2 space-y-4'>
+        <div
+            id='importForm'
+            className='flex flex-col font-light text-sm p-2 space-y-4'>
             <div className='flex flex-row w-full space-x-4'>
                 <span className='self-center'>Table name</span>
                 <input
@@ -80,10 +82,12 @@ export default function ImportForm(props: ImportFormProps) {
                 onChange={(evt) => setFile(evt.target.files?.[0])} />
             <div className='flex flex-row justify-center'>
                 <ActionButton
+                    id='importForm-importButton'
                     disabled={!name || !file}
                     label='Import'
                     action={onImport} />
                 <ActionButton
+                    id='importForm-cancelButton'
                     label='Cancel'
                     action={onClose} />
             </div>

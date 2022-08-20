@@ -102,9 +102,11 @@ export default function App(props: AppProps) {
             <div className='flex flex-col'>
                 <ActionBar>
                     <ActionButton
+                        id='importCsvButton'
                         label='Import CSV'
                         action={() => setShowImportModal(true)} />
                     <ActionButton
+                        id='saveButton'
                         label='Save'
                         action={save} />
                 </ActionBar>
@@ -123,9 +125,10 @@ export default function App(props: AppProps) {
                 </Modal>}
             </div>
             <Split orientation={Orientation.Vertical}>
-                <div className='w-full h-full flex flex-col'>
+                <div id='editorPane' className='w-full h-full flex flex-col'>
                     <ActionBar>
                         <ActionButton
+                            id='runButton'
                             label='Run'
                             action={runQuery} />
                     </ActionBar>

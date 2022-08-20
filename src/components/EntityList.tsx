@@ -29,14 +29,19 @@ export default function EntityList(props: EntityListProps) {
     return (
         <ul className='bg-neutral-50'>
             {tables.map((table, ix) =>
-                <details key={ix} className='hover:bg-neutral-100'>
+                <details
+                    id={`entityList-${table.name}`}
+                    key={ix}
+                    className='hover:bg-neutral-100'>
                     <summary className='flex flex-row justify-between p-1'>
                         <div className='font-light text-sm self-center'>{table.name}</div>
                         <div className='flex flex-row'>
                             <ActionButton
+                                id={`downloadButton-${table.name}`}
                                 label='Download'
                                 action={() => download(table.name)} />
                             <ActionButton
+                                id={`dropButton-${table.name}`}
                                 label='Drop'
                                 action={() => drop(table.name)} />
                         </div>
