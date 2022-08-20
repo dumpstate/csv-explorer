@@ -10,12 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - shell: bash
-      env:
-        GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-      run: |
+    - run: |
         npm config set '@dumpstate:registry' 'https://npm.pkg.github.com'
         npm config set '//npm.pkg.github.com/:_authToken' "${GH_PACKAGES_TOKEN}"
-    - run: npm install
+        npm install
+      env:
+        GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
     - run: make preview & npx wait-on http://localhost:8080
     - run: npm test

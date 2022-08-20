@@ -1,0 +1,35 @@
+name: release
+
+on:
+  workflow_run:
+    workflows: test
+    branches: main
+    types: completed
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  release:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: |
+        npm config set '@dumpstate:registry' 'https://npm.pkg.github.com'
+        npm config set '//npm.pkg.github.com/:_authToken' "${GH_PACKAGES_TOKEN}"
+        npm install
+      env:
+        GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+    - run: make build
+    - name: Setup Pages
+      uses: actions/configure-pages@v1
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v1
+      with:
+        path: './dist'
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v1
