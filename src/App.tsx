@@ -37,14 +37,14 @@ export default function App(props: AppProps) {
     const [result, setResult] = useState<any[] | null>()
     const [tables, setTables] = useState<Table[]>([])
     const [showImportModal, setShowImportModal] = useState<boolean>(false)
-    const [localStore, setLocalStore] = useState<KVStore>()
+    const [localStore, setLocalStore] = useState<KVStore | null>()
 
     useEffect(() => {
         const init = async () => {
             await loadTables()
 
-            const localStore = await KVStore.create(LOCAL_STORE_NAME)
-            const cachedQuery = await localStore.get<string>(LOCAL_STORE_QUERY_KEY)
+            const localStore = await KVStore.tryCreate(LOCAL_STORE_NAME)
+            const cachedQuery = await localStore?.get<string>(LOCAL_STORE_QUERY_KEY)
             cachedQuery && setQuery(cachedQuery)
             setLocalStore(localStore)
         }
@@ -54,7 +54,7 @@ export default function App(props: AppProps) {
 
     async function onEditorChange(query: string | null, selection: [number, number] | null) {
         if (query != null) {
-            localStore && await localStore.set(LOCAL_STORE_QUERY_KEY, query)
+            await localStore?.set(LOCAL_STORE_QUERY_KEY, query)
 
             setQuery(query)
         }
