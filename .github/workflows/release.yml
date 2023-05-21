@@ -27,10 +27,10 @@ jobs:
       - name: Install Dependencies
         run: |
           npm config set '@dumpstate:registry' 'https://npm.pkg.github.com'
-          npm config set '//npm.pkg.github.com/:_authToken' "${GH_PACKAGES_TOKEN}"
+          npm config set '//npm.pkg.github.com/:_authToken' "${TOKEN}"
           npm install
         env:
-          GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build
         run: make build
       - name: Upload artifact
