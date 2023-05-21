@@ -1,5 +1,5 @@
 import { KVStore } from '@dumpstate/ixdb-kv-store'
-import CodeEditor from '@uiw/react-textarea-code-editor'
+import Editor from '@monaco-editor/react'
 import { ReactNode, useEffect, useState } from 'react'
 
 import ActionButton from './components/ActionButton'
@@ -33,7 +33,6 @@ export default function App(props: AppProps) {
 
     const [query, setQuery] = useState<string>('')
     const [queryError, setQueryError] = useState<string>()
-    const [selection, setSelection] = useState<[number, number]>([0, 0])
     const [result, setResult] = useState<any[] | null>()
     const [tables, setTables] = useState<Table[]>([])
     const [showImportModal, setShowImportModal] = useState<boolean>(false)
@@ -52,15 +51,11 @@ export default function App(props: AppProps) {
         init()
     }, [])
 
-    async function onEditorChange(query: string | null, selection: [number, number] | null) {
-        if (query != null) {
+    async function onEditorChange(query: string | null | undefined) {
+        if (query !== null && query !== undefined) {
             await localStore?.set(LOCAL_STORE_QUERY_KEY, query)
 
             setQuery(query)
-        }
-
-        if (selection != null) {
-            setSelection(selection)
         }
     }
 
@@ -77,13 +72,8 @@ export default function App(props: AppProps) {
     }
 
     async function runQuery() {
-        const [start, end] = selection
-        const subQuery = start === end
-            ? query
-            : query.slice(start, end)
-
         try {
-            const res = await sqlStore.exec(subQuery)
+            const res = await sqlStore.exec(query)
             await loadTables()
             setResult(res)
         } catch(err: any) {
@@ -133,20 +123,11 @@ export default function App(props: AppProps) {
                             action={runQuery} />
                     </ActionBar>
                     <div className='grow overflow-auto'>
-                        <CodeEditor
-                            value={query}
-                            language='sql'
-                            placeholder='Your SQL query'
-                            onChange={(evn) => onEditorChange(evn.target.value, null)}
-                            onSelect={(evn) => onEditorChange(null, [
-                                evn.currentTarget.selectionStart,
-                                evn.currentTarget.selectionEnd,
-                            ])}
-                            padding={15}
-                            style={{
-                                fontSize: 12,
-                                fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
-                            }} />
+                        <Editor
+                            defaultLanguage='sql'
+                            defaultValue={query}
+                            onChange={(value) => onEditorChange(value)}
+                        />
                     </div>
                 </div>
                 <Spreadsheet data={result} error={queryError} />
