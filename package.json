@@ -17,7 +17,7 @@
   "dependencies": {
     "@dumpstate/ixdb-kv-store": "^0.2.0",
     "@dumpstate/web-worker-proxy": "^0.1.7",
-    "@uiw/react-textarea-code-editor": "^2.0.3",
+    "@monaco-editor/react": "^4.5.1",
     "csv-parse": "^5.3.0",
     "csv-stringify": "^6.2.0",
     "jspreadsheet-ce": "^4.11.1",
@@ -27,7 +27,6 @@
     "sql.js": "^1.7.0"
   },
   "devDependencies": {
-    "@monaco-editor/react": "^4.5.1",
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
     "@types/sql.js": "^1.4.3",
