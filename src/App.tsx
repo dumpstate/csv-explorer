@@ -122,7 +122,7 @@ export default function App(props: AppProps) {
                             label='Run'
                             action={runQuery} />
                     </ActionBar>
-                    <div className='grow overflow-auto'>
+                    <div id='editor' className='grow overflow-auto'>
                         <Editor
                             defaultLanguage='sql'
                             defaultValue={query}

@@ -74,7 +74,9 @@ describe('CSV Explorer', () => {
 
         importCSV(FILES.foo)
 
-        cy.get('#editorPane textarea')
+        cy.get('#editor')
+            .click()
+            .focused()
             .type(`select * from ${FILES.foo.name};`)
         cy.get('#runButton').click()
 
