@@ -2,7 +2,6 @@ name: test
 
 on:
   push:
-    branches: [main]
   pull_request:
     branches: [main]
 
@@ -11,11 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: |
-        npm config set '@dumpstate:registry' 'https://npm.pkg.github.com'
-        npm config set '//npm.pkg.github.com/:_authToken' "${TOKEN}"
-        npm install
-      env:
-        TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - run: npm install
     - run: make preview & npx wait-on http://localhost:8080
     - run: npm test
