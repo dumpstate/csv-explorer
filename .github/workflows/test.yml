@@ -11,5 +11,6 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - run: npm install
+            - run: npm run lint
             - run: make preview & npx wait-on http://localhost:8080
             - run: npm test
