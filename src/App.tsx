@@ -126,7 +126,7 @@ export default function App(props: AppProps) {
 					<div id="editor" className="grow overflow-auto">
 						<Editor
 							defaultLanguage="sql"
-							defaultValue={query}
+							value={query}
 							onChange={(value) => onEditorChange(value)}
 						/>
 					</div>
