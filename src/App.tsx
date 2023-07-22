@@ -127,6 +127,7 @@ export default function App(props: AppProps) {
 						<Editor
 							defaultLanguage="sql"
 							defaultValue={query}
+							value={query}
 							onChange={(value) => onEditorChange(value)}
 						/>
 					</div>

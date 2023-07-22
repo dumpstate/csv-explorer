@@ -66,6 +66,7 @@ describe("CSV Explorer", () => {
 		cy.get("#editor")
 			.click()
 			.focused()
+			.clear()
 			.type(`select * from ${FILES.foo.name};`)
 		cy.get("#runButton").click()
 
