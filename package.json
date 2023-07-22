@@ -1,6 +1,6 @@
 {
 	"name": "csv-explorer",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "Run SQL queries against CSV documents.",
 	"main": "dist/app.js",
 	"scripts": {
@@ -26,13 +26,13 @@
 		"prop-types": "^15.8.1",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"sql.js": "^1.7.0"
+		"sql.js": "^1.8.0"
 	},
 	"devDependencies": {
-		"@types/node": "^20.4.3",
+		"@types/node": "^20.4.4",
 		"@types/react": "^18.2.15",
 		"@types/react-dom": "^18.2.7",
-		"@types/sql.js": "^1.4.3",
+		"@types/sql.js": "^1.4.4",
 		"autoprefixer": "^10.4.14",
 		"browserify": "^17.0.0",
 		"cypress": "^12.17.2",

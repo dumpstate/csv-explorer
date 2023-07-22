@@ -1,11 +1,12 @@
 import { ProxyType, workerProxy } from "@dumpstate/web-worker-proxy"
-import { Database, QueryExecResult } from "sql.js"
+import { QueryExecResult } from "sql.js"
+import { ExtDatabase } from "../models/ExtDatabase"
 
 export default class SqlStore {
-	private proxy: Promise<ProxyType<Database>>
+	private proxy: Promise<ProxyType<ExtDatabase>>
 
 	constructor(dbWorkerScript: string) {
-		this.proxy = workerProxy<Database>(dbWorkerScript)
+		this.proxy = workerProxy<ExtDatabase>(dbWorkerScript)
 	}
 
 	public async getAllTables(): Promise<string[]> {

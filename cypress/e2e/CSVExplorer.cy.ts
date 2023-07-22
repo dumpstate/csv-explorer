@@ -67,7 +67,7 @@ describe("CSV Explorer", () => {
 			.click()
 			.focused()
 			.clear()
-			.type(`select * from ${FILES.foo.name};`)
+			.type(`select * from ${FILES.foo.name};`, { delay: 20 })
 		cy.get("#runButton").click()
 
 		cy.get("#spreadsheet thead > tr > td[title=id]").should("be.visible")
