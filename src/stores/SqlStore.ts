@@ -1,81 +1,84 @@
-import { ProxyType, workerProxy } from '@dumpstate/web-worker-proxy'
-import { Database, QueryExecResult } from 'sql.js'
+import { ProxyType, workerProxy } from "@dumpstate/web-worker-proxy"
+import { Database, QueryExecResult } from "sql.js"
 
 export default class SqlStore {
+	private proxy: Promise<ProxyType<Database>>
 
-    private proxy: Promise<ProxyType<Database>>
+	constructor(dbWorkerScript: string) {
+		this.proxy = workerProxy<Database>(dbWorkerScript)
+	}
 
-    constructor(dbWorkerScript: string) {
-        this.proxy = workerProxy<Database>(dbWorkerScript)
-    }
+	public async getAllTables(): Promise<string[]> {
+		const db = await this.proxy
 
-    public async getAllTables(): Promise<string[]> {
-        const db = await this.proxy
-
-        const res = await db.exec(`
+		const res = await db.exec(`
             select name
             from sqlite_schema
             where type = 'table' and
                   name not like 'sqlite_%'
         `)
 
-        return res.flatMap(({ values }) =>
-            values.map(value => value.toString()))
-    }
+		return res.flatMap(({ values }) =>
+			values.map((value) => value.toString()),
+		)
+	}
 
-    public async dropTable(table: string): Promise<QueryExecResult[]> {
-        const db = await this.proxy
+	public async dropTable(table: string): Promise<QueryExecResult[]> {
+		const db = await this.proxy
 
-        return db.exec(`drop table if exists ${table}`);
-    }
+		return db.exec(`drop table if exists ${table}`)
+	}
 
-    public async getColumns(table: string): Promise<string[]> {
-        const db = await this.proxy
-        const res = await db.exec(`pragma table_info(${table})`)
+	public async getColumns(table: string): Promise<string[]> {
+		const db = await this.proxy
+		const res = await db.exec(`pragma table_info(${table})`)
 
-        return res.flatMap(({ values }) =>
-            values.map(entry => {
-                const tableName = entry[1] as string
-                const dataType = entry[2] as string
+		return res.flatMap(({ values }) =>
+			values.map((entry) => {
+				const tableName = entry[1] as string
+				const dataType = entry[2] as string
 
-                if (dataType && dataType.length) {
-                    return `${tableName} (${dataType})`
-                }
+				if (dataType && dataType.length) {
+					return `${tableName} (${dataType})`
+				}
 
-                return tableName
-            }))
-    }
+				return tableName
+			}),
+		)
+	}
 
-    public async getAllRows(table: string): Promise<[string[], any[]]> {
-        const db = await this.proxy
-        const res = await db.exec(`select * from ${table}`)
+	public async getAllRows(table: string): Promise<[string[], any[]]> {
+		const db = await this.proxy
+		const res = await db.exec(`select * from ${table}`)
 
-        if (!res || res.length === 0) {
-            return [[], []]
-        }
+		if (!res || res.length === 0) {
+			return [[], []]
+		}
 
-        const columns = res[0].columns
-        const data: any[] = columns
-            .reduce((acc: any, col: string, cix: number) => {
-                res[0].values.forEach((row, rix) => {
-                    acc[rix][col] = row[cix]
-                })
+		const columns = res[0].columns
+		const data: any[] = columns.reduce(
+			(acc: any, col: string, cix: number) => {
+				res[0].values.forEach((row, rix) => {
+					acc[rix][col] = row[cix]
+				})
 
-                return acc
-            }, res[0].values.map(() => ({})))
+				return acc
+			},
+			res[0].values.map(() => ({})),
+		)
 
-        return [columns, data]
-    }
+		return [columns, data]
+	}
 
-    public async save(): Promise<void> {
-        const db = await this.proxy
+	public async save(): Promise<void> {
+		const db = await this.proxy
 
-        return db.save()
-    }
+		return db.save()
+	}
 
-    public async exec(stmt: string): Promise<QueryExecResult[]> {
-        const db = await this.proxy
+	public async exec(stmt: string): Promise<QueryExecResult[]> {
+		const db = await this.proxy
 
-        return db.exec(stmt)
-    }
+		return db.exec(stmt)
+	}
 }

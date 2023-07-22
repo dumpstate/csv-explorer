@@ -1,26 +1,17 @@
 {
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "out",
-        "baseUrl": ".",
-        "lib": [
-            "es5",
-            "es6",
-            "ES2018",
-            "dom"
-        ],
-        "jsx": "react-jsx",
-        "declaration": true,
-        "target": "es6",
-        "strict": true,
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "esModuleInterop": true
-    },
-    "files": [
-        "./externals.d.ts"
-    ],
-    "include": [
-        "src"
-    ]
+	"compilerOptions": {
+		"rootDir": "src",
+		"outDir": "out",
+		"baseUrl": ".",
+		"lib": ["es5", "es6", "ES2018", "dom"],
+		"jsx": "react-jsx",
+		"declaration": true,
+		"target": "es6",
+		"strict": true,
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"esModuleInterop": true
+	},
+	"files": ["./externals.d.ts"],
+	"include": ["src"]
 }

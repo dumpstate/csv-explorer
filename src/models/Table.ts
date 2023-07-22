@@ -1,4 +1,4 @@
 export interface Table {
-    readonly name: string
-    readonly columns: string[]
+	readonly name: string
+	readonly columns: string[]
 }

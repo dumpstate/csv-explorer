@@ -1,2 +1,2 @@
-declare module "react-spreadsheet-grid";
-declare module "jspreadsheet-ce";
+declare module "react-spreadsheet-grid"
+declare module "jspreadsheet-ce"
